@@ -1,0 +1,812 @@
+openapi: 3.0.0
+info:
+  title: openapi
+  version: '1.0'
+servers:
+  - url: 'http://localhost:4000/api'
+  - url: 'http://api.reviewduthu.vn/api'
+    description: ''
+paths:
+  /auth/login:
+    parameters: []
+    post:
+      summary: post-auth-login
+      operationId: post-auth-login
+      responses:
+        '200':
+          description: Login Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+            examples:
+              Account 1:
+                value:
+                  username: ledutu
+                  password: qlgwuk
+          application/json:
+            schema:
+              type: object
+              properties: {}
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+      description: Login with username and password
+  /auth/add-user:
+    post:
+      summary: ''
+      operationId: post-auth-add-user
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                store:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                profile:
+                  type: object
+                  properties:
+                    full_name:
+                      type: string
+                    address:
+                      type: string
+                    national_id:
+                      type: string
+        description: ''
+      security:
+        - Authorization: []
+      tags:
+        - Auth
+  /user/me:
+    get:
+      summary: get-user-me
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          headers: {}
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-user-me
+      parameters: []
+      description: Get user detail.
+      tags:
+        - User
+      security:
+        - Authorization: []
+    parameters: []
+  /user/logout:
+    get:
+      summary: get-user-logout
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+              examples:
+                Successful:
+                  value:
+                    code: OK
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+      operationId: get-user-logout
+      tags:
+        - User
+      description: Logout
+      parameters: []
+      security:
+        - Authorization: []
+  '/user/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-user-id
+      tags:
+        - User
+      description: Get User Detail
+      security:
+        - Authorization: []
+    put:
+      summary: ''
+      operationId: put-user-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: Edit User Detail
+      security:
+        - Authorization: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                profile:
+                  type: object
+                  properties:
+                    full_name:
+                      type: string
+                    address:
+                      type: string
+                    national_id:
+                      type: string
+      tags:
+        - User
+    delete:
+      summary: ''
+      operationId: delete-user-id
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - Authorization: []
+      tags:
+        - User
+  /user:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-user
+      description: Get all user
+      security:
+        - Authorization: []
+  '/user/role/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    put:
+      summary: ''
+      operationId: put-user-role-id
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: Set Role User Id
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum:
+                    - '0'
+                    - '1'
+                    - '2'
+      security:
+        - Authorization: []
+  /store:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Store
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Store'
+      operationId: get-store
+      parameters: []
+      security:
+        - Authorization: []
+      description: Get All store
+    post:
+      summary: ''
+      operationId: post-store
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      description: Create store
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+          application/xml:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                phone_number:
+                  type: string
+              x-examples:
+                example-1:
+                  address: 123 Hoàng Bật Đạt
+                  phone_number: +84 123 123 123
+            examples:
+              example-1:
+                value: |-
+                  {
+                      "address": "123 Hoàng Bật Đạt",
+                      "phone_number": "+84 123 123 123"
+                  }
+        description: ''
+      security:
+        - Authorization: []
+      tags:
+        - Store
+  '/store/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Store
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+      operationId: get-store-id
+      security:
+        - Authorization: []
+    put:
+      summary: ''
+      operationId: put-store-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    code: NO_PERMISSION
+                    message: Bạn không có quyền để thực hiện
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                store not found:
+                  value: Không tìm thấy cửa hàng
+      description: Update store
+      security:
+        - Authorization: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                phone_number:
+                  type: string
+              x-examples:
+                example-1:
+                  address: 133 Hoàng Bật Đạt
+                  phone_number: +84 123 123 123
+            examples:
+              ex1:
+                value:
+                  address: 133 Hoàng Bật Đạt
+                  phone_number: +84 123 123 123
+      tags:
+        - Store
+    delete:
+      summary: ''
+      operationId: delete-store-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example-1:
+                  value: ERROR
+      tags:
+        - Store
+  /warehouse:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Warehouse
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+              examples:
+                example-1:
+                  value:
+                    id: string
+                    quantity: 0
+                    category:
+                      _id: string
+                      code: string
+                      name: string
+                    status: available
+                    store:
+                      _id: string
+                      address: string
+                      phone_number: string
+                      createdAt: string
+                      updatedAt: string
+                    merchandise:
+                      _id: string
+                      code: string
+                      name: string
+                      unit_code: 0
+                      price: 0
+                      expired_date: string
+                      category:
+                        _id: string
+                        code: string
+                        name: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-warehouse
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: storeId
+          description: To get warehouse for store id
+      security:
+        - Authorization: []
+  /category:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Category
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '401':
+          description: Unauthorized
+      operationId: get-category
+      security:
+        - Authorization: []
+  '/category/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Category
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-category-id
+      description: Get Detail Category
+      security:
+        - Authorization: []
+    post:
+      summary: ''
+      operationId: post-category-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: Create category
+      tags:
+        - Category
+      security:
+        - Authorization: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    put:
+      summary: ''
+      operationId: put-category-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: Update Category Detail
+      security:
+        - Authorization: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      tags:
+        - Category
+    delete:
+      summary: ''
+      operationId: delete-category-id
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      description: Delete category Detail
+      security:
+        - Authorization: []
+      tags:
+        - Category
+components:
+  schemas:
+    Error:
+      title: Response
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    LoginResponse:
+      title: Product
+      type: object
+      properties:
+        user:
+          type: string
+        access_token:
+          type: string
+    User:
+      title: User
+      type: object
+      properties:
+        _id:
+          type: string
+        profile:
+          $ref: '#/components/schemas/Profile'
+        role:
+          oneOf:
+            - properties: {}
+              default: 0
+            - properties: {}
+              default: 1
+          type: number
+        is_block:
+          type: boolean
+        username:
+          type: string
+        store:
+          $ref: '#/components/schemas/Store'
+    Profile:
+      title: Profile
+      type: object
+      properties:
+        full_name:
+          type: string
+        address:
+          type: string
+        image:
+          type: string
+        gender:
+          type: string
+        birthday:
+          type: string
+        national_id:
+          type: string
+    Store:
+      title: Store
+      x-stoplight:
+        id: 4nd37hvkj8yqb
+      type: object
+      properties:
+        _id:
+          type: string
+        address:
+          type: string
+        phone_number:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    Warehouse:
+      title: Warehouse
+      x-stoplight:
+        id: emkckw3telgjt
+      type: object
+      properties:
+        id:
+          type: string
+        quantity:
+          type: number
+        category:
+          $ref: '#/components/schemas/Category'
+        status:
+          type: string
+          enum:
+            - available
+            - expired
+        store:
+          $ref: '#/components/schemas/Store'
+        merchandise:
+          $ref: '#/components/schemas/Merchandise'
+    Category:
+      title: Category
+      x-stoplight:
+        id: 41xviqbnyubzu
+      type: object
+      properties:
+        _id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+    Merchandise:
+      title: Merchandise
+      x-stoplight:
+        id: hzya6pzqx00tg
+      type: object
+      properties:
+        _id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        unit_code:
+          type: number
+        price:
+          type: number
+        expired_date:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+  responses:
+    '400':
+      description: Input is invalid data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example-1:
+              value:
+                code: INVALID_INPUT
+                message: string
+    '401':
+      description: unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example-1:
+              value:
+                code: UN_AUTHORIZED
+                message: string
+    '404':
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example-1:
+              value:
+                code: NOT_FOUND
+                message: string
+    '500':
+      description: An error occurs at server side
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example-1:
+              value:
+                code: SERVER_ERROR
+                message: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      description: Basic login with bearer token
